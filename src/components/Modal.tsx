@@ -1,14 +1,15 @@
 import { X } from 'lucide-react';
+import { ModalProps } from '../types';
 
 export function Modal({
   isOpen,
   onClose,
   title,
   children,
-}) {
+}: ModalProps) {
   if (!isOpen) return null;
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }

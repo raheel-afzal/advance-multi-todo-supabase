@@ -1,6 +1,8 @@
 import { ListTodo, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "./Badge";
 import { formatDate } from "../utils/DateTime";
+import { TodoListProps } from "../types";
+
 export function TodoList({
   todos,
   onEdit,
@@ -8,7 +10,7 @@ export function TodoList({
   onCheckListChange,
   filterBy,
   onFilterChange,
-}) {
+}: TodoListProps) {
   // let taskIsCompleted;
   // if(filterBy ==='pending'){
   //   taskIsCompleted = false
@@ -22,25 +24,27 @@ export function TodoList({
     completed: true,
   };
 
-  const checkstyle = (todoId, taskIdx) => {
-    const tempTodo = todos.find((todo) => todo.id === todoId);
-    if (tempTodo.tasks[taskIdx].isCompleted == true) {
-      return true;
-    } else {
-      false;
-    }
-  };
+  // const checkstyle = (todoId: string, taskIdx: number): boolean => {
+  //   const tempTodo = todos.find((todo) => todo.id === todoId);
+  //   if (tempTodo && tempTodo.tasks[taskIdx]?.isCompleted === true) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
 
-  const getCheckedItem = (id) => {
+  const getCheckedItem = (id: string): number => {
     //match with id -> single todo object from todos
     // get tasks array from single todo object.
     //  and apply filter on task array, and get the length of the new array
 
     const todo = todos.find((item) => {
-      return item.id == id;
+      return item.id === id;
     });
+    if (!todo) return 0;
+
     const completedtask = todo.tasks.filter((task) => {
-      return task.isCompleted == true;
+      return task.isCompleted === true;
     });
 
     return completedtask.length;
@@ -63,10 +67,19 @@ export function TodoList({
         >
           <div className="flex gap-x-8">
             <div className="w-full">
-            
-  {parseInt(todo.priorities.priority) === 1 ? <button className="text-xs font-medium pt-[2px] rounded-full px-3 h-6 text-gray-800 min-w-fit border bg-green-400">Highest Priority</button> : 
-   parseInt(todo.priorities.priority) === 2 ? <button className="text-xs font-medium pt-[2px] rounded-full px-3 h-6 text-gray-800 min-w-fit border bg-blue-400">Moderate Priority</button> : 
-   <button className="text-xs font-medium pt-[2px] bg-orange-400 rounded-full px-3 h-6 text-gray-800 min-w-fit border ">Least Priority</button>}
+              {parseInt(todo.priorities.priority) === 1 ? (
+                <button className="text-xs font-medium pt-[2px] rounded-full px-3 h-6 text-gray-800 min-w-fit border bg-green-400">
+                  Highest Priority
+                </button>
+              ) : parseInt(todo.priorities.priority) === 2 ? (
+                <button className="text-xs font-medium pt-[2px] rounded-full px-3 h-6 text-gray-800 min-w-fit border bg-blue-400">
+                  Moderate Priority
+                </button>
+              ) : (
+                <button className="text-xs font-medium pt-[2px] bg-orange-400 rounded-full px-3 h-6 text-gray-800 min-w-fit border ">
+                  Least Priority
+                </button>
+              )}
 
               <h3 className="text-2xl font-semibold mb-5 text-center text-gray-600">
                 {todo.title}
@@ -87,16 +100,16 @@ export function TodoList({
                       : task.isCompleted === taskIsCompleted[filterBy]
                   )
                   .map((obj) => (
-                    <div className="flex ">
+                    <div key={obj.taskId} className="flex ">
                       <input
                         type="checkbox"
                         checked={obj.isCompleted}
-                        onChange={(e) => onCheckListChange(todo.id, obj.taskId)}
-                        key={`inp-${obj.taskId}`}
+                        onChange={() =>
+                          onCheckListChange(todo.id, obj.taskId || "")
+                        }
                         className="me-2"
                       />
                       <li
-                        key={obj.taskId}
                         className={`p-2 ${
                           obj.isCompleted ? "line-through" : ""
                         } bg-white w-full border-b`}
@@ -144,9 +157,14 @@ export function TodoList({
                 />
               </div>
               <div className="text-xs mt-4 font-semibold text-gray-500">
-                {formatDate(todo.updatedAt) ?<>
-                <p>updated at:</p>
-                <p>{formatDate(todo.updatedAt)} </p></>: false}
+                {formatDate(todo.updatedAt) ? (
+                  <>
+                    <p>updated at:</p>
+                    <p>{formatDate(todo.updatedAt)} </p>
+                  </>
+                ) : (
+                  false
+                )}
                 <p className="mt-1">created at:</p>
                 <p>{formatDate(todo.createdAt)}</p>
               </div>
