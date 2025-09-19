@@ -1,6 +1,7 @@
-import React from 'react'
+import React from 'react';
+import { InputProps } from '../types';
 
-const Input = ({ value, onChange, placeholder, ...props }) => {
+const Input: React.FC<InputProps> = ({ value, onChange, placeholder, ...props }) => {
     return (
         <input
             value={value}
@@ -9,7 +10,7 @@ const Input = ({ value, onChange, placeholder, ...props }) => {
             className="flex-1 p-2 border rounded-md focus:outline-blue-400 focus:ring-blue-400"
             {...props}
         />
-    )
-}
+    );
+};
 
-export default Input
+export default Input;

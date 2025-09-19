@@ -1,29 +1,33 @@
-import { Plus, Trash2, AlertTriangle as TriangleAlert } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import Input from "./Input";
 import Button from "./Button";
 import Select from "./Select";
-export function TodoForm({ formData, setFormData }) {
-const options=  [
+import { TodoFormProps, SelectOption } from "../types";
+
+export function TodoForm({ formData, setFormData }: TodoFormProps) {
+  if (!formData) return null;
+
+  const options: SelectOption[] = [
     {name:"Set Priority Level",value: ""},
     {name:"Highest Priority",value: "1"},
     {name:"Moderate Priority",value: "2"},
     {name:"Least Priority",value: "3"}
-    ]
+  ];
     
-  const handledropdownchange = (e) => {
-    setFormData((prev) => ({
+  const handledropdownchange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prev: any) => prev ? ({
       ...prev,
       priorities: { priority: e.target.value },
-    }));
+    }) : null);
     console.log("formdata", formData);
   };
-  const handleTitleChange = (e) => {
-    setFormData((prev) => ({ ...prev, title: e.target.value }));
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev: any) => prev ? ({ ...prev, title: e.target.value }) : null);
   };
-  const handleTaskChange = (value, index) => {
-    setFormData((prev) => ({
+  const handleTaskChange = (value: string, index: number) => {
+    setFormData((prev: any) => prev ? ({
       ...prev,
-      tasks: prev.tasks.map((obj, i) => {
+      tasks: prev.tasks.map((obj: any, i: number) => {
         if (i === index) {
           return {
             ...obj,
@@ -33,11 +37,11 @@ const options=  [
           return obj;
         }
       }),
-    }));
+    }) : null);
   };
 
   const addTask = () => {
-    setFormData((prev) => ({
+    setFormData((prev: any) => prev ? ({
       ...prev,
       tasks: [
         ...prev.tasks,
@@ -47,14 +51,14 @@ const options=  [
           isCompleted: false,
         },
       ],
-    }));
+    }) : null);
   };
 
-  const removeTask = (index) => {
-    setFormData((prev) => ({
+  const removeTask = (index: number) => {
+    setFormData((prev: any) => prev ? ({
       ...prev,
-      tasks: prev.tasks.filter((_, i) => i !== index),
-    }));
+      tasks: prev.tasks.filter((_: any, i: number) => i !== index),
+    }) : null);
   };
 
   return (

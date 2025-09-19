@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "./components/Modal";
 import { TodoForm } from "./components/TodoForm";
 import { TodoList } from "./components/TodoList";
 import Button from "./components/Button";
 import { NotebookPen } from "lucide-react";
 import { useTodos } from "./hooks/useTodo";
-import { useEffect } from "react";
+import { NewTodoData, Todo, FilterType } from "./types";
+
 function App() {
-
-
-  const initalNewtodoData = {
+  const initialNewTodoData: NewTodoData = {
     title: "",
     tasks: [
       {
@@ -17,14 +16,13 @@ function App() {
         isCompleted: false,
       },
     ],
-    priorities:{priority:"",
-      x:""}
+    priorities: { priority: "", x: "" }
   };
 
   //states
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTodo, setEditingTodo] = useState(null);
-  const [appliedFilter, setAppliedFilter] = useState("none");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [appliedFilter, setAppliedFilter] = useState<FilterType>("none");
 
   //custom hooks
   const {
@@ -35,53 +33,51 @@ function App() {
     deleteTodoById,
     updateCheckBox,
     setNewTodoData,
-  } = useTodos(initalNewtodoData,setEditingTodo);
+  } = useTodos(initialNewTodoData);
 
   //handle create todo
-  const handleCreateTodo = (e) => {
+  const handleCreateTodo = (e: React.FormEvent) => {
     e.preventDefault();
     createTodo(e); 
-  
-  
   };
   
-
- 
   // handle update todo
-  const handleUpdateTodo = (e) => {
+  const handleUpdateTodo = (e: React.FormEvent) => {
     e.preventDefault();
-console.log(editingTodo)
-    updateTodo(editingTodo);
-
-    setIsModalOpen(false);
-    setEditingTodo(null);
+    if (editingTodo) {
+      console.log(editingTodo);
+      updateTodo(editingTodo);
+      setIsModalOpen(false);
+      setEditingTodo(null);
+    }
   };
 
   // handle edit todo
-  const handleEditTodo = (todo) => {
+  const handleEditTodo = (todo: Todo) => {
     setEditingTodo(todo);
     setIsModalOpen(true);
   };
 
   //handle delete by id
-  const handleDeleteTodo = (id) => deleteTodoById(id);
+  const handleDeleteTodo = (id: string) => deleteTodoById(id);
 
   //handle filter ,note: will be additional filter in future
-  const handleFilterChange = (filter) => {
+  const handleFilterChange = (filter: FilterType) => {
     setAppliedFilter(filter);
   };
 
   // handle  task check list  update
-  const handleCheckListChange = (todoId, taskId) => {
+  const handleCheckListChange = (todoId: string, taskId: string) => {
     updateCheckBox(todoId, taskId);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingTodo(null);
-  }; useEffect(() => {
-    console.log("Updated todos:", todos);
+  };
 
+  useEffect(() => {
+    console.log("Updated todos:", todos);
   }, [todos]);
 
 
